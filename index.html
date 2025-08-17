@@ -1,0 +1,713 @@
+        // Intersection Observer para animaciones<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+    <title>Plan Estratégico de Gastos de Operación :: Yehiibhii Estudio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(26, 26, 46, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            padding: 3rem 0;
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            z-index: -1;
+        }
+
+        .header h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .header .subtitle {
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 1.3rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* Objetivo Section */
+        .objetivo {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .objetivo::before {
+            content: '🎯';
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        .objetivo-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(0, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15);
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.4s ease;
+        }
+
+        .objetivo-content:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.2);
+        }
+
+        .objetivo h2 {
+            color: #00ffff;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .objetivo p {
+            font-size: 1.3rem;
+            color: #ffffff;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        /* Sections */
+        .section {
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .section:nth-child(even) {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+        }
+
+        .section:nth-child(odd) {
+            background: linear-gradient(135deg, #16213e 0%, #0f0f23 100%);
+        }
+
+        .section-content {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 255, 255, 0.03) 100%);
+            backdrop-filter: blur(20px);
+            padding: 3rem;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-content:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(0, 255, 255, 0.15);
+            border-color: rgba(0, 255, 255, 0.3);
+        }
+
+        .section h2 {
+            color: #ffffff;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+        }
+
+        .section-number {
+            background: linear-gradient(135deg, #00ffff 0%, #0080ff 100%);
+            color: #0f0f23;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0, 255, 255, 0.4);
+            font-size: 1.1rem;
+        }
+
+        .section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .section li {
+            margin-bottom: 1.2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 255, 255, 0.05) 100%);
+            border-radius: 16px;
+            border-left: 3px solid #00ffff;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section li:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.2);
+            border-left-color: #0080ff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 255, 255, 0.08) 100%);
+        }
+
+        .section li strong {
+            color: #00ffff;
+            font-weight: 500;
+        }
+
+        .section li {
+            color: #e0e0e0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Formula Section */
+        .formula {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .formula .section-content {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 128, 255, 0.05) 100%);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .formula h2 {
+            color: #ffffff;
+        }
+
+        .formula-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .formula-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 255, 255, 0.08) 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .formula-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.25);
+            border-color: rgba(0, 255, 255, 0.4);
+        }
+
+        .percentage {
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        .formula-item h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .formula-item p {
+            color: #b0b0b0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Escalamiento */
+        .escalamiento .etapa {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 128, 255, 0.05) 100%);
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            border-radius: 18px;
+            border-left: 4px solid #00ffff;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .escalamiento .etapa:hover {
+            transform: translateX(8px);
+            box-shadow: 0 8px 30px rgba(0, 255, 255, 0.2);
+            border-left-color: #0080ff;
+        }
+
+        .escalamiento .etapa h3 {
+            color: #00ffff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .escalamiento .etapa p {
+            color: #e0e0e0;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        /* Valor Agregado */
+        .valor-agregado {
+            background: linear-gradient(135deg, #16213e 0%, #0f0f23 100%);
+        }
+
+        .valor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .valor-item {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 255, 255, 0.05) 100%);
+            padding: 2rem;
+            border-radius: 18px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .valor-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 48px rgba(0, 255, 255, 0.15);
+            border-color: rgba(0, 255, 255, 0.4);
+        }
+
+        .valor-item::before {
+            content: '✓';
+            display: block;
+            font-size: 2.5rem;
+            color: #00ffff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .valor-item h3 {
+            color: #ffffff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+
+        .valor-item p {
+            color: #b0b0b0;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* CTA Section */
+        .cta {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: white;
+            text-align: center;
+            padding: 5rem 0;
+        }
+
+        .cta-content {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(0, 128, 255, 0.05) 100%);
+            padding: 4rem;
+            border-radius: 24px;
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            box-shadow: 0 16px 48px rgba(0, 255, 255, 0.1);
+        }
+
+        .cta h2 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .cta-text {
+            font-size: 1.4rem;
+            font-style: italic;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 400;
+            line-height: 1.8;
+            text-shadow: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            }
+        }
+
+        .section-content {
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-number {
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header .subtitle {
+                font-size: 1rem;
+            }
+
+            .section-content {
+                padding: 1.5rem;
+            }
+
+            .formula-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .percentage {
+                font-size: 2rem;
+            }
+        }
+
+        /* Floating elements */
+        .floating-icon {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.08;
+            animation: float 8s ease-in-out infinite;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg); 
+            }
+            33% { 
+                transform: translateY(-15px) rotate(2deg); 
+            }
+            66% { 
+                transform: translateY(-8px) rotate(-1deg); 
+            }
+        }
+
+        .icon-1 { top: 15%; left: 8%; animation-delay: 0s; }
+        .icon-2 { top: 25%; right: 12%; animation-delay: 3s; }
+        .icon-3 { bottom: 35%; left: 15%; animation-delay: 6s; }
+        .icon-4 { bottom: 25%; right: 8%; animation-delay: 2s; }
+    </style>
+</head>
+<body>
+    <!-- Floating Icons -->
+    <div class="floating-icon icon-1">📊</div>
+    <div class="floating-icon icon-2">💡</div>
+    <div class="floating-icon icon-3">🚀</div>
+    <div class="floating-icon icon-4">💰</div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1>📊 Plan Estratégico de Gastos de Operación</h1>
+            <p class="subtitle">Diseñado para negocios en transformación digital</p>
+        </div>
+    </header>
+
+    <!-- Objetivo -->
+    <section class="objetivo">
+        <div class="container">
+            <div class="objetivo-content">
+                <h2>🎯 Objetivo</h2>
+                <p>Optimizar los gastos de operación de la empresa para que cada peso invertido en diseño, tecnología y marketing <strong>genere retorno real</strong> y no se pierda en fugas innecesarias.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Diagnóstico -->
+    <section class="section">
+        <div class="container">
+            <div class="section-content">
+                <h2><span class="section-number">1</span> Diagnóstico Inicial</h2>
+                <ul>
+                    <li><strong>Auditoría rápida</strong> de gastos actuales</li>
+                    <li><strong>Identificación de costos ocultos:</strong> procesos manuales, software duplicado, proveedores caros</li>
+                    <li><strong>Definir el punto de equilibrio:</strong> cuánto necesita vender para cubrir sus costos fijos</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Clasificación -->
+    <section class="section">
+        <div class="container">
+            <div class="section-content">
+                <h2><span class="section-number">2</span> Clasificación de Gastos</h2>
+                <ul>
+                    <li><strong>Fijos (necesarios para operar):</strong> renta, nómina clave, software base, internet, contabilidad</li>
+                    <li><strong>Variables (dependen del proyecto o venta):</strong> materiales, producción, publicidad</li>
+                    <li><strong>Inversión estratégica (crecimiento):</strong> campañas digitales, consultoría, desarrollo web, capacitación</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fórmula -->
+    <section class="section formula">
+        <div class="container">
+            <div class="section-content">
+                <h2><span class="section-number">3</span> Fórmula de Distribución Óptima</h2>
+                <p style="margin-bottom: 2rem; font-size: 1.1rem;">Modelo sugerido 70/20/10 (ajustable según sector y tamaño)</p>
+                <div class="formula-grid">
+                    <div class="formula-item">
+                        <div class="percentage">70%</div>
+                        <h3>Operación</h3>
+                        <p>Gastos fijos + variables</p>
+                    </div>
+                    <div class="formula-item">
+                        <div class="percentage">20%</div>
+                        <h3>Inversión en Crecimiento</h3>
+                        <p>Marketing, digitalización, desarrollo de procesos</p>
+                    </div>
+                    <div class="formula-item">
+                        <div class="percentage">10%</div>
+                        <h3>Fondo de Liquidez</h3>
+                        <p>Respaldo para meses bajos o emergencias</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estrategias -->
+    <section class="section">
+        <div class="container">
+            <div class="section-content">
+                <h2><span class="section-number">4</span> Estrategias de Optimización</h2>
+                <ul>
+                    <li><strong>Reducir costos sin perder calidad:</strong> renegociación con proveedores</li>
+                    <li><strong>Digitalizar procesos:</strong> menos gastos en papelería, tiempos muertos y errores</li>
+                    <li><strong>Subcontratación flexible:</strong> freelancers y proveedores bajo demanda</li>
+                    <li><strong>Publicidad inteligente:</strong> campañas pequeñas pero muy segmentadas (no gastar en "likes", sino en clientes reales)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Escalamiento -->
+    <section class="section escalamiento">
+        <div class="container">
+            <div class="section-content">
+                <h2><span class="section-number">5</span> Escalamiento Sostenible</h2>
+                <div class="etapa">
+                    <h3>Etapa 1</h3>
+                    <p>Asegurar que los gastos fijos se cubren con ingresos recurrentes</p>
+                </div>
+                <div class="etapa">
+                    <h3>Etapa 2</h3>
+                    <p>Reinvertir utilidades en branding, marketing y UX/UI para crecer</p>
+                </div>
+                <div class="etapa">
+                    <h3>Etapa 3</h3>
+                    <p>Convertir parte de los gastos en <strong>activos</strong> (desarrollo de un ecosistema digital propio que reduzca dependencia de intermediarios)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valor Agregado -->
+    <section class="section valor-agregado">
+        <div class="container">
+            <div class="section-content">
+                <h2>💡 Valor Agregado para el Cliente</h2>
+                <div class="valor-grid">
+                    <div class="valor-item">
+                        <h3>Control Financiero Claro</h3>
+                        <p>Visibilidad total de todos los gastos y su impacto</p>
+                    </div>
+                    <div class="valor-item">
+                        <h3>Decisiones Basadas en Datos</h3>
+                        <p>Inversiones estratégicas, no corazonadas</p>
+                    </div>
+                    <div class="valor-item">
+                        <h3>Rentabilidad Garantizada</h3>
+                        <p>En cada paso de la transformación digital</p>
+                    </div>
+                    <div class="valor-item">
+                        <h3>Seguridad Financiera</h3>
+                        <p>Nunca gastar más del 40% de un proyecto en operativos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>👉 Tu Propuesta de Valor</h2>
+                <p class="cta-text">"Yo no solo diseño su marca y ecosistema digital, también me aseguro de que cada inversión tenga retorno y de que sus gastos de operación trabajen a su favor, no en su contra."</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Intersection Observer para animaciones suaves y profesionales
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -30px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar todas las secciones con delay progresivo
+        document.querySelectorAll('.section-content').forEach((section, index) => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = `all 0.8s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s`;
+            observer.observe(section);
+        });
+
+        // Efecto parallax muy sutil para iconos flotantes
+        let ticking = false;
+        
+        function updateParallax() {
+            const scrolled = window.pageYOffset;
+            const icons = document.querySelectorAll('.floating-icon');
+            
+            icons.forEach((icon, index) => {
+                const speed = 0.2 + (index * 0.05);
+                const yPos = scrolled * speed;
+                icon.style.transform = `translateY(${yPos}px) rotate(${yPos * 0.02}deg)`;
+            });
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateParallax);
+                ticking = true;
+            }
+        });
+
+        // Hover effects suaves y profesionales
+        document.querySelectorAll('.section li, .valor-item, .formula-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+        });
+
+        // Efecto de typing para el texto principal (sutil)
+        function typeEffect(element, text, speed = 50) {
+            let i = 0;
+            element.innerHTML = '';
+            
+            function typeWriter() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            typeWriter();
+        }
+
+        // Aplicar efecto typing al cargar la página
+        window.addEventListener('load', () => {
+            const mainTitle = document.querySelector('.header h1');
+            const originalText = mainTitle.textContent;
+            setTimeout(() => {
+                typeEffect(mainTitle, originalText, 80);
+            }, 500);
+        });
+
+        // Smooth scroll behavior mejorado
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
